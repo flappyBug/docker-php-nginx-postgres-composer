@@ -1,64 +1,32 @@
 # docker-php-nginx-postgres-composer
-Docker Compose configuration to run PHP 7.x with Nginx, PHP-FPM, latest PostgreSQL and Composer.
 
-## Overview
+PHP运行环境的Docker Compose配置。包含以下组件：
+- web （最新的Nginx）
+- php （PHP7.x with PHP-FPM）
+- db （最新的PostgreSQL）
+- composer
+可以很容易地对以上组件的版本进行限定，其中php在`.docker/Dockerfile`中定制，其它组件在`docker-compose.yml`中。
 
-This Docker Compose configuration lets you run easily PHP 7.1 with Nginx, PHP-FPM, PostgreSQL 10.1 and Composer.
-It exposes 4 services:
+已针对国内环境替换成国内源，加速构建容器。
 
-* web (Nginx)
-* php (PHP 7.x with PHP-FPM)
-* db (Latest PostgreSQL)
-* composer
+# 如何使用
 
-The PHP image comes with the most commonly used extensions and is configured with xdebug.
-The UUID extension for PostgreSQL has been added.
-Nginx default configuration is set up for Symfony 4 (but can be easily changed) and will serve your working directory.
-Composer is run at boot time and will automatically install the vendors.
+1. clone本仓库后，复制`.env.example`为`.env`，在其中填入相关的数据库参数
+2. 运行`docker-compose up`，完毕。
 
-## Install prerequisites
+Nginx侦听80端口，Postgres侦听5432端口。请确保这些端口未被占用。
 
-For now the project has been tested on Linux only but should run fine on Docker for Windows and Docker for Mac.
+php工程放在`./app`中，入口文件`./app/index.php`。
 
-You will need:
+# 连接组件终端
 
-* [Docker CE](https://docs.docker.com/engine/installation/)
-* [Docker Compose](https://docs.docker.com/compose/install)
-* Git (optional)
+`docker-compose exec [php|web|db] /bin/bash`
 
-## How to use it
-
-### Starting Docker Compose
-
-Checkout the repository or download the sources.
-
-Simply run `docker-compose up` and you are done.
-
-Nginx will be available on `localhost:80` and PostgreSQL on `localhost:5432`.
-
-### Using Composer
-
-`docker-compose run composer <cmd>`
-
-Where `cmd` is any of the available composer command.
-
-### Using PostgreSQL
-
-Default connection:
+# 连接psql
 
 `docker-compose exec db psql -U postgres`
 
-Using .env file default parameters:
 
-`docker-compose exec db psql -U dbuser dbname`
-
-If you want to connect to the DB from another container (from the `php` one for instance), the host will be the service name: `db`.
-
-### Using PHP
-
-You can execute any command on the `php` container as you would do on any docker-compose container:
-
-`docker-compose exec php php -v`
 
 ## Change configuration
 
